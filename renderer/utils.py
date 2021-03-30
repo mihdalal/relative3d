@@ -1,20 +1,19 @@
-import numpy as np
 import os
-import torch
+
+import cv2
 import matplotlib
-from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
+import numpy as np
+import torch
+from matplotlib import cm
+from mpl_toolkits.mplot3d import Axes3D
 # import plotly.plotly as py
 # import plotly.graph_objs as go
 # import plotly.offline as offline
-from mpl_toolkits.mplot3d.art3d import Poly3DCollection, Line3DCollection
+from mpl_toolkits.mplot3d.art3d import Line3DCollection, Poly3DCollection
 from torch.autograd import Variable
+
 from ..utils import transformations
-import cv2
-from matplotlib import cm
-
-
-
 
 curr_path = os.path.dirname(os.path.abspath(__file__))
 blender_dir = os.path.join(curr_path, 'blender')
@@ -159,15 +158,15 @@ def append_obj(mf_handle, vertices, faces):
 def append_mtl_obj(mf_handle, vertices, faces, mtl_ids):
     for vx in range(vertices.shape[0]):
         mf_handle.write('v {:f} {:f} {:f}\n'.format(vertices[vx, 0], vertices[vx, 1], vertices[vx, 2]))
+    mf_handle.write('usemtl {}\n'.format(mtl_ids[0]))
     for fx in range(faces.shape[0]):
-        mf_handle.write('usemtl m{}\n'.format(mtl_ids[fx]))
         mf_handle.write('f {:d} {:d} {:d}\n'.format(faces[fx, 0], faces[fx, 1], faces[fx, 2]))
     return
 
 
 def append_mtl(mtl_handle, mtl_ids, colors):
     for mx in range(len(mtl_ids)):
-        mtl_handle.write('newmtl m{}\n'.format(mtl_ids[mx]))
+        mtl_handle.write('newmtl {}\n'.format(mtl_ids[mx]))
         mtl_handle.write('Kd {:f} {:f} {:f}\n'.format(colors[mx, 0], colors[mx, 1], colors[mx, 2]))
         mtl_handle.write('Ka 0 0 0\n')
     return
@@ -186,6 +185,16 @@ def render_directory(mesh_dir, png_dir, scale=0.5):
     os.system(cmd)
     return
 
+def render_image_from_obj(save_path, obj_file, camera_view, step):
+    os.environ['obj_file'] = str(obj_file)
+    os.environ['camera_view'] = str(camera_view)
+    blender_path = os.path.abspath('../relative3d/renderer/blender/blender')
+    blank_blend_path = os.path.abspath('../relative3d/renderer/blank.blend')
+    python_path = os.path.abspath('../relative3d/renderer/render_image_from_obj.py')
+    cmd = '{} {} --engine CYCLES --background --python {} -o {}/render_{}_{}_# -F PNG -f 0'.format(
+        blender_path, blank_blend_path, python_path, save_path, step, camera_view)
+    os.system(cmd)
+    return
 
 class Downsample(torch.nn.Module):
     def __init__(self, s, use_max=False, batch_mode=False):
@@ -293,7 +302,7 @@ def codes_to_points(codes, thresh=0.5, objectwise=False):
 def dispmap_to_mesh(dmap, k_mat, scale_x=1, scale_y=1, min_disp=1e-2):
     '''
     Converts a inverse depth map to a 3D point cloud.
-    
+
     Args:
         dmap: H X W inverse depth map
         k_mat : 3 X 3 intrinsic matrix
@@ -344,7 +353,7 @@ def dispmap_to_mesh(dmap, k_mat, scale_x=1, scale_y=1, min_disp=1e-2):
 def dispmap_to_points(dmap, k_mat, scale_x=1, scale_y=1, min_disp=1e-2):
     '''
     Converts a inverse depth map to a 3D point cloud.
-    
+
     Args:
         dmap: H X W inverse depth map
         k_mat : 3 X 3 intrinsic matrix
@@ -376,7 +385,7 @@ def dispmap_to_points(dmap, k_mat, scale_x=1, scale_y=1, min_disp=1e-2):
 def points_to_cubes(points, edge_size=0.05):
     '''
     Converts an input point cloud to a set of cubes.
-    
+
     Args:
         points: N X 3 array
         edge_size: cube edge size
@@ -455,7 +464,7 @@ def vis_detections(im, dets):
 
 def vis_relative_dirs(im, relative_dirs):
     """Visual debugging of detections."""
-   
+
     norm = matplotlib.colors.Normalize(vmin=0, vmax=len(relative_dirs))
     for ix in range(len(relative_dirs)):
         direction, src_i, trj_i = relative_dirs[ix]
@@ -495,6 +504,7 @@ def vis_relative_dirs(im, relative_dirs):
     return cubify(corner_points)
 
 import pdb
+
 # import matplotlib.pyplot as plt
 # if __name__ =="__main__":
 #     fig = plt.figure()
