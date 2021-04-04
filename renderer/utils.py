@@ -168,7 +168,7 @@ def append_mtl(mtl_handle, mtl_ids, colors):
     for mx in range(len(mtl_ids)):
         mtl_handle.write('newmtl {}\n'.format(mtl_ids[mx]))
         mtl_handle.write('Kd {:f} {:f} {:f}\n'.format(colors[mx, 0], colors[mx, 1], colors[mx, 2]))
-        mtl_handle.write('Ka 0 0 0\n')
+        # mtl_handle.write('Ka 0 0 0\n')
     return
 
 
@@ -188,9 +188,9 @@ def render_directory(mesh_dir, png_dir, scale=0.5):
 def render_image_from_obj(save_path, obj_file, camera_view, step):
     os.environ['obj_file'] = str(obj_file)
     os.environ['camera_view'] = str(camera_view)
-    blender_path = os.path.abspath('../relative3d/renderer/blender/blender')
-    blank_blend_path = os.path.abspath('../relative3d/renderer/blank.blend')
-    python_path = os.path.abspath('../relative3d/renderer/render_image_from_obj.py')
+    blender_path = os.path.abspath('relative3d/renderer/blender/blender')
+    blank_blend_path = os.path.abspath('relative3d/renderer/blank.blend')
+    python_path = os.path.abspath('relative3d/renderer/render_image_from_obj.py')
     cmd = '{} {} --engine CYCLES --background --python {} -o {}/render_{}_{}_# -F PNG -f 0'.format(
         blender_path, blank_blend_path, python_path, save_path, step, camera_view)
     os.system(cmd)
