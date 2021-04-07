@@ -191,7 +191,7 @@ def render_image_from_obj(save_path, obj_file, camera_view, step):
     blender_path = os.path.abspath('relative3d/renderer/blender/blender')
     blank_blend_path = os.path.abspath('relative3d/renderer/blank.blend')
     python_path = os.path.abspath('relative3d/renderer/render_image_from_obj.py')
-    cmd = '{} {} --engine CYCLES --background --python {} -o {}/render_{}_{}_# -F PNG -f 0'.format(
+    cmd = '{} {} --engine CYCLES --background --python {} -o {}/render_{}_{}_# -F PNG -f 0 -- --cycles-device CUDA'.format(
         blender_path, blank_blend_path, python_path, save_path, step, camera_view)
     os.system(cmd)
     return
