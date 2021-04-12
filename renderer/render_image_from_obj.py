@@ -47,7 +47,7 @@ if __name__ == '__main__':
 
     world = bpy.data.worlds["World"]
     world.use_nodes = True
-    world.node_tree.nodes["Background"].inputs["Strength"].default_value = 12.5
+    world.node_tree.nodes["Background"].inputs["Strength"].default_value = 25
 
     camera = bpy.context.scene.camera
     camera.data.clip_start = 0.01
