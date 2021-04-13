@@ -185,9 +185,10 @@ def render_directory(mesh_dir, png_dir, scale=0.5):
     os.system(cmd)
     return
 
-def render_image_from_obj(save_path, obj_file, camera_view, step):
+def render_image_from_obj(save_path, obj_file, camera_view, step, wall_material):
     os.environ['obj_file'] = str(obj_file)
     os.environ['camera_view'] = str(camera_view)
+    os.environ['wall_material'] = str(wall_material)
     blender_path = os.path.abspath('relative3d/renderer/blender/blender')
     blank_blend_path = os.path.abspath('relative3d/renderer/blank.blend')
     python_path = os.path.abspath('relative3d/renderer/render_image_from_obj.py')
