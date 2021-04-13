@@ -20,18 +20,28 @@ if __name__ == '__main__':
     bpy.ops.object.scale_clear()
 
     mat = bpy.data.materials[wall_material]
-    print(bpy.data.materials.keys())
-    clear_material(mat)
     mat.use_nodes = True
 
     nodes = mat.node_tree.nodes
     links = mat.node_tree.links
 
+    #remove previous settings for material
+    mat.node_tree.links.clear()
+    mat.node_tree.nodes.clear()
+
+    mixshader = nodes.new(type='ShaderNodeMixShader')
     output = nodes.new( type = 'ShaderNodeOutputMaterial' )
 
-    diffuse = nodes.new( type = 'ShaderNodeBsdfPrincipled' )
+    principled_bsdf = nodes.new(type='ShaderNodeBsdfPrincipled')
+    transparent_bsdf = nodes.new(type='ShaderNodeBsdfTransparent')
 
-    link = links.new( diffuse.outputs['BSDF'], output.inputs['Surface'] )
+    #adds mixed shader to surface option for material
+    link = links.new( mixshader.outputs[0], output.inputs['Surface'] )
+
+    #adds back the bsdf and makes it transparent
+    link = links.new( principled_bsdf.outputs['BSDF'], mixshader.inputs[1])
+    link = links.new( transparent_bsdf.outputs['BSDF'], mixshader.inputs[2])
+
     camObj = bpy.data.objects["Camera"]
 
     if camera_view == 1:
