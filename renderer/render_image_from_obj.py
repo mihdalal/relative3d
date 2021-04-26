@@ -46,24 +46,25 @@ if __name__ == '__main__':
 
     if camera_view == 1:
         # top down
-        camObj.location[0] = 11.31883
-        camObj.location[1] = 124.68112
-        camObj.location[2] = 395.59085
+        camObj.location[0] = 18.9166
+        camObj.location[1] = 238.95
+        camObj.location[2] = 800
         camObj.rotation_mode = "QUATERNION"
-        camObj.rotation_quaternion[0] = .481
-        camObj.rotation_quaternion[1] = .007
-        camObj.rotation_quaternion[2] = -0.012
-        camObj.rotation_quaternion[3] = -0.877
+        camObj.rotation_quaternion[0] = .482
+        camObj.rotation_quaternion[1] = 0.0001
+        camObj.rotation_quaternion[2] = -0.0001
+        camObj.rotation_quaternion[3] = -0.876
+
     elif camera_view == 2:
         #left view
-        camObj.location[0] = 240.244
-        camObj.location[1] = 89.0999
-        camObj.location[2] = 70.8328
+        camObj.location[0] = -389.988
+        camObj.location[1] = 506.106
+        camObj.location[2] = 800
         camObj.rotation_mode = "QUATERNION"
-        camObj.rotation_quaternion[0] = 0.147761
-        camObj.rotation_quaternion[1] = 0.166308
-        camObj.rotation_quaternion[2] = 0.728829
-        camObj.rotation_quaternion[3] = 0.647547
+        camObj.rotation_quaternion[0] = 0.435469
+        camObj.rotation_quaternion[1] = 0.192065
+        camObj.rotation_quaternion[2] = -0.354908
+        camObj.rotation_quaternion[3] = -0.804685
     else:
         #right view
         camObj.location[0] = 59.5978
@@ -84,6 +85,10 @@ if __name__ == '__main__':
     camera.data.clip_end = 1000000
     bpy.context.scene.cycles.use_denoising = True
     for scene in bpy.data.scenes:
-        scene.render.resolution_x = 1080
-        scene.render.resolution_y = 1080
+        scene.render.resolution_x = 4320
+        scene.render.resolution_y = 4320
     bpy.context.scene.cycles.samples = 512
+
+    #bpy.context.scene.cycles.device = 'GPU'
+    #bpy.context.user_preferences.addon['cycles'].preferences.compute_device_type = 'CUDA'
+    #bpy.context.user_preferences.addon['cycles'].preferences.compute_device = 'CUDA_1'
