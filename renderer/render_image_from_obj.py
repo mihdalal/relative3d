@@ -85,9 +85,13 @@ if __name__ == '__main__':
     camera.data.clip_end = 1000000
     bpy.context.scene.cycles.use_denoising = True
     for scene in bpy.data.scenes:
+        scene.render.tile_x = 256
+        scene.render.tile_y = 256
         scene.render.resolution_x = 4320
         scene.render.resolution_y = 4320
     bpy.context.scene.cycles.samples = 512
+    bpy.context.scene.view_settings.view_transform = 'Raw'
+
 
     #bpy.context.scene.cycles.device = 'GPU'
     #bpy.context.user_preferences.addon['cycles'].preferences.compute_device_type = 'CUDA'
